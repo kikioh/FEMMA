@@ -5,5 +5,5 @@ An optimal control framework that combines the finite element method and the met
 The Liouville–von Neumann equation is solved using a one-dimensional finite element formulation, which provides a joint solution for spin trajectory and control gradients. Optimization with the Method of Moving Asymptotes, using ensemble fidelities and gradients, converges rapidly to a fidelity of 0.995.
 
 ## Paper
-M. He, Y. Deng, B. Luy, and J. G. Korvink. Finite elements and moving asymptotes accelerate quantum optimal control-FEMMA. arXiv preprint arXiv:2510.04798, https://arxiv.org/abs/2510.04798, 2025.
+M. He, Y. Deng, B. Luy, and J. G. Korvink. Finite elements and moving asymptotes accelerate quantum optimal control-FEMMA. J. Chem. Phys. 164, 064114, doi: 10.1063/5.0305310, 2026.
 
