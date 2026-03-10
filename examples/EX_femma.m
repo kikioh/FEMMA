@@ -23,7 +23,7 @@ control.off_ops = {Lz};                                 % offset operators
 control.offsets = {20e3*linspace(-0.5,0.5,51)};         % Offset distribution, Hz
 control.pwr_levels = {2*pi*10e3*linspace(0.8,1.2,5)};   % Pulse power ensemble, rad/s
 control.max_iter = 50;                                  % Termination condition
-control.tol_f = 0.995;                                  % Minimum fidelity
+control.tol_f = 0.995;                                  % target fidelity
 control.method = 'mma';                                 % optimization method
 control.pulse_form = 'phase';                           % control pulse form
 control.integrator = 'rectangle';                       % approximation type
@@ -47,3 +47,4 @@ guess = pi*(2*rand(1,numel(control.pulse_dt))-1);
 % fprintf('Absolute fidelity difference between FEM and Spinach: %.6f\n',...
 
 % abs(fid - converg(end)));
+
