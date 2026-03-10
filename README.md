@@ -7,3 +7,5 @@ The Liouville–von Neumann equation is solved using a one-dimensional finite el
 ## Paper
 M. He, Y. Deng, B. Luy, and J. G. Korvink. Finite elements and moving asymptotes accelerate quantum optimal control-FEMMA. J. Chem. Phys. 164, 064114, doi: 10.1063/5.0305310, 2026.
 
+## Acknowledgements
+This project utilizes modified optimal control routines from the [Spinach library](https://spindynamics.org/). These modifications were implemented to adapt the algorithms for specific benchmark tests. The original Spinach code is used under the **MIT License**.
