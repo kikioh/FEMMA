@@ -48,7 +48,7 @@ control.off_ops = {Lz};                                         % resonance offs
 control.operators = {Lx,Ly};                                    % Controls
 control.method='lbfgs';                                         % Optimisation method
 control.max_iter=100;                                           % Maximum iterations
-control.tol_f=0.995;                                          	% Maximum fidelity
+control.tol_f=0.995;                                          	% target fidelity
 % control.penalties={'DNS'};                                      % Penalty types
 % control.p_weights=1e-9;                                         % Penalty weights
 control.parallel='ensemble';                                    % Parallelisation mode
@@ -66,4 +66,5 @@ pulse_shape=fminnewton(spin_system,@grape_phase,guess);
 
 % % run optimization with mma
 % [control,mma] = mmaInit(control,guess);
+
 % pulse_shape=fminnewton(spin_system,@grape_phase,guess,mma);
