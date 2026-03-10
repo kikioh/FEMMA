@@ -30,8 +30,8 @@ control.integrator = 'rectangle';                       % approximation type
 control.type = 'ppt';
 
 % create fem system
-fem.lvn = meshFEM(control,'LvN','linear');              % FEM parameters for LvN equation
-fem.helm = meshFEM(control,'Helmholtz');                % FEM parameters for Helmholtz
+fem.lvn = meshFEM(control,'LvN','linear');              % FEM parameters for sloving LvN equation
+fem.helm = meshFEM(control,'Helmholtz');                % FEM parameters for solving Helmholtz equation
 
 % initial guess
 guess = pi*(2*rand(1,numel(control.pulse_dt))-1);
@@ -45,4 +45,5 @@ guess = pi*(2*rand(1,numel(control.pulse_dt))-1);
 % check fidelity
 % fid = fidelityCheck(control,waveform);
 % fprintf('Absolute fidelity difference between FEM and Spinach: %.6f\n',...
+
 % abs(fid - converg(end)));
