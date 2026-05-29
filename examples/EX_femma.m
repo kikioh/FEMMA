@@ -3,6 +3,8 @@
 %
 % mengjia.he@kit.edu, 2025.02.18
 
+% test github
+
 clearvars; close all; clc;
 
 % % generate control operators
