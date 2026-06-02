@@ -1,0 +1,25 @@
+# build output (command-line cmake)
+/build/
+build*/
+*.o
+*.a
+*.exe
+*.out
+
+# Visual Studio "Open Folder" / CMake mode and IDE state
+/out/
+.vs/
+.vscode/
+.idea/
+
+# vendored Eigen is not tracked; CMake finds or fetches it
+/third_party/Eigen/
+/third_party/unsupported/
+
+# generated pulse / waveform output from running the examples
+femma_pulse.txt
+femma_waveform.txt
+
+# editor and OS scratch
+*.swp
+.DS_Store
