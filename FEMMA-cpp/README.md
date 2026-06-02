@@ -8,10 +8,13 @@ Hermite), two equations (Liouville–von Neumann and Bloch), two waveform forms
 (phase and xy), and offset/power ensembles are supported.  The GRAPE benchmark
 in `lib/Spinach_modified/` of the original is out of scope.
 
-The optimiser is translated from the GPL-licensed MMA/GCMMA reference code of
-Krister Svanberg, so the whole library is distributed under **GPL-3.0-or-later**
-— see [`LICENSE`](LICENSE), [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md),
-and the [Licensing](#licensing) section below.
+This port carries **two licences**: the core is **MIT**, and the optimiser in
+`src/mma/` — translated from Krister Svanberg's GPL MMA/GCMMA code — is
+**GPL-3.0-or-later**.  A compiled build links the two, so the **distributed
+binary is GPL** while the individual core sources stay MIT.  Each file states
+its licence with an `SPDX-License-Identifier` line.  See [`LICENSE`](LICENSE),
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md), and the
+[Licensing](#licensing) section below.
 
 ## Status
 
@@ -47,8 +50,8 @@ unchanged.  The correspondence is:
   returns `K`) plus `ele_matrix_grad_linear` (the per-element `Kgrad` blocks).
   The load `f` is the all-zero homogeneous load for the LvN equation, so it is
   not threaded through; it is reconstructed inside the solve as the Dirichlet
-  right-hand side.  When the Bloch equation is added, `f` becomes non-zero and
-  will be returned explicitly.
+  right-hand side.  For the Bloch equation `f` is non-zero (the relaxation
+  source) and is assembled explicitly inside `bloch_solve`.
 - `[x,grad] = femSolve(control,K,f,Kgrad_L)` maps to `femsolve` (forward) and
   `femsolve_grad` (forward plus gradient).
 - `control.drifts` is now the starting value of the slice Liouvillian and is
@@ -175,6 +178,18 @@ Eigen is located in three ways, in order: a system install (`Eigen3::Eigen`),
 a copy vendored under `third_party/` (so that `third_party/Eigen/Dense`
 exists), or, failing both, a network download via CMake `FetchContent`.
 
+On Windows with Visual Studio 2022, either open the folder as a CMake project
+or build from the *x64 Native Tools Command Prompt*:
+
+```bat
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+cmake --build build --config Release --target ex_femma2
+build\Release\ex_femma2.exe
+```
+
+To keep build artefacts out of a synced folder (e.g. OneDrive), point the build
+directory elsewhere with `-B C:\some\path\outside\onedrive`.
+
 The ensemble loop uses OpenMP when available; CMake links it automatically and
 falls back to serial execution otherwise.
 
@@ -201,10 +216,13 @@ After building with `FEMMA_BUILD_EXAMPLES=ON` (the default):
 ./build/lvn_phase           # broadband Liouville-von Neumann phase pulse, full trajectory
 ```
 
-`ex_femma2.cpp` is a line-for-line C++ transcription of `EX_femma2.m`: it builds
-the same operators, states, control parameters, mesh, and MMA setup, then runs
-the optimisation and prints the fidelity trajectory.  It is the natural entry
-point for reading the library against the MATLAB.
+`ex_femma2.cpp` is a C++ transcription of `EX_femma2.m`: it builds the same
+operators, states, control parameters, mesh, and MMA setup, runs the
+optimisation, prints the fidelity trajectory, and writes the optimised pulse as
+a Bruker JCAMP-DX shape file (`include/femma/shape_export.hpp`) with a header of
+pulse parameters.  The sampling grids (offset, power, point count) live only in
+its `PARAMETERS` block, so it is the natural entry point for reading the library
+against the MATLAB.
 
 ### Using the library
 
@@ -225,37 +243,48 @@ Bloch phase or xy) plugs into the same `fem_mma` driver unchanged.
 
 ```
 include/femma/   public headers (mma.hpp is the optimiser interface)
-src/mma/         MMA/GCMMA optimiser, translated from Svanberg's GPL code
-src/core/        original FEMMA translation (elements, solves, ensembles, drivers)
+src/mma/         MMA/GCMMA optimiser, translated from Svanberg's GPL code (GPL)
+src/core/        original FEMMA translation: elements, solves, ensembles, drivers (MIT)
 tests/           ctest suite (19 executables)
 examples/        standalone demonstration programmes
 tools/           MATLAB cross-validation harnesses (FEMMA_BUILD_TOOLS=ON)
 third_party/     optional vendored Eigen (not tracked)
 ```
 
-The build produces two libraries, `femma_mma` (GPL) and `femma_core`, with
-`femma_core` linking `femma_mma`; that single edge is the whole dependency
-across the GPL boundary.  The `femma_fem` interface target links both for
-convenience.  The split is deliberate: replacing `src/mma/` with a permissive
-optimiser behind `include/femma/mma.hpp` frees the rest of the library (see
-[Licensing](#licensing)).
+The build produces two libraries, `femma_mma` (GPL) and `femma_core` (MIT
+sources), with `femma_core` linking `femma_mma`; that single edge is the whole
+dependency across the GPL boundary.  The `femma_fem` interface target links both
+for convenience.  The split is deliberate: replacing `src/mma/` with a
+permissive optimiser behind `include/femma/mma.hpp` frees the rest of the
+library (see [Licensing](#licensing)).
 
 ## Licensing
 
-FEMMA-C++ is released under **GPL-3.0-or-later**.  The reason is the optimiser
-in `src/mma/`: `subsolv`, `mmasub`, `kktcheck`, `asymp`, `gcmmasub`,
-`concheck`, and `raaupdate` are a translation of Krister Svanberg's MMA/GCMMA
-reference code, which is GPL for academic, non-commercial use.  A combined work
-that includes GPL code must itself be GPL.
+This C++ port carries two licences, stated per file with an
+`SPDX-License-Identifier` line:
 
-Everything in `src/core/` is an original translation of the FEMMA MATLAB code
-and does not derive from Svanberg's work.  The two parts live in separate
-folders and build as separate libraries on purpose: to ship the core under a
-permissive licence, replace `src/mma/` with an independent CCSA/MMA
-implementation (for example NLopt's CCSA) behind the same `include/femma/mma.hpp`
-interface; nothing in `src/core/` depends on the Svanberg sources beyond that
-header.  Place the full GPL-3.0 text in a `COPYING` file before redistributing.
-See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for citations.
+- **`src/mma/`** (`subsolv`, `mmasub`, `kktcheck`, `asymp`, `gcmmasub`,
+  `concheck`, `raaupdate`) is a translation of Krister Svanberg's MMA/GCMMA
+  reference code, which is GPL for academic, non-commercial use, and is
+  therefore **GPL-3.0-or-later**.
+- **Everything else** — `src/core/`, the headers, examples, and tests — is an
+  original translation of the FEMMA MATLAB code and is **MIT**.
+
+The two parts build as separate libraries (`femma_mma` and `femma_core`).  When
+they are compiled and linked into one library or executable, the result is a
+combined work that includes GPL code, so **the distributed binary is governed
+as a whole by GPL-3.0-or-later** — even though most of the source files are MIT.
+
+Because the MIT core does not derive from Svanberg's work, a fully permissive
+build is possible: replace `src/mma/` with an independent CCSA/MMA optimiser
+(for example NLopt's CCSA) behind the `include/femma/mma.hpp` interface; nothing
+in `src/core/` depends on the Svanberg sources beyond that header.  Place the
+full GPL-3.0 text in a `COPYING` file before redistributing.  See
+[`LICENSE`](LICENSE) for the MIT text and the GPL notice, and
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for citations.
+
+This port is published as the `femma-cpp/` folder of the FEMMA repository; the
+MATLAB implementation at the repository root remains MIT.
 
 ## Design decisions that differ from the MATLAB
 
