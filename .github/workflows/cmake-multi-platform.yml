@@ -1,4 +1,4 @@
-# This starter workflow is for a CMake project located in the ./FEMMA-cpp/
+# This starter workflow is for a CMake project located in the folder ./FEMMA-cpp/
 
 name: ci
 
