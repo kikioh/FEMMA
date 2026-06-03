@@ -13,7 +13,7 @@ ensemble fidelities and gradients, converges rapidly to a fidelity of 0.995.
 ## Repository contents
 
 - **FEM** (repository root) — the MATLAB implementation of the FEM method.
-- **`femma-cpp/`** — a C++/Eigen port with the same method, see `femma-cpp/README.md` for
+- **`FEMMA-cpp/`** — a C++/Eigen port with the same method, see `femma-cpp/README.md` for
   build instructions. It carries its own licence (see License below).
 
 ## Requirements
