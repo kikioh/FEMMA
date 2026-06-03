@@ -1,3 +1,5 @@
+# Note: This is just a backup file! The actual CI configuration file is located in the .github/workflows/ folder in the root directory.
+
 name: ci
 
 on:
